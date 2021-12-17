@@ -39,7 +39,27 @@
 	mvn package
 	java -jar target/analytics-0.0.1-SNAPSHOT.jar
 	```
+4. **Generate Logs (Optional)**
+	```pip install pyperclip```
+	
+	Run `Generate Random POST Requests.py`
+	Change these variables as needed
+	```
+	# Random number generator for Adjetter Media assignment (Java)
+	numToGenerate = 2
+	mobileNoStart = 8
 
+	# seconds
+	MinimumOffsetBetween2Date = 60
+	MaximumOffsetBetween2Date = 240
+
+	# Timestamp range
+	TimeFormat = '%d-%m-%Y %H:%M:%S'
+
+	randomDate_start = "01-01-2021 00:00:00"
+	randomDate_end = "31-12-2021 23:00:00"
+	```
+	It'll generate List of POST req and copy to your clipboard. Finally, paste it on POSTMAN...
 
 ## API supports GET and POST requests
 ### GET requests
