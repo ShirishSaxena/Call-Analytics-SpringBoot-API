@@ -101,3 +101,8 @@
 	![POST req multi](https://user-images.githubusercontent.com/6762915/146578693-1f3ce4af-3c87-4105-b099-4cd21e631a01.png)
 
 
+## To-do
+
+	Delete LogByNumber
+	Delete LogByNumberAndStartTimeAndEndTime
+	Update LogByNumber/ID
