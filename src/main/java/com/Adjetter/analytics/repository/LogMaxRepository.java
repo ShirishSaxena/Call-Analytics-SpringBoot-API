@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface LogMaxRepository extends JpaRepository<LogMax, Long> {
     LogMax findByDate(Date date);
+
     LogMax findByYearAndWeekNumber(Integer year, Integer weekNumber);
 
     @Query(value = "SELECT DAYNAME(:date)", nativeQuery = true)

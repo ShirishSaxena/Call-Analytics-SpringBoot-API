@@ -16,13 +16,13 @@ import java.sql.Date;
 @Table(name = "DurationDays")
 public class LogMax {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="hibernnateLogMax")
-    @SequenceGenerator(name = "hibernnateLogMax", sequenceName = "hibernnateLogMax", initialValue = 1, allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernnateLogMax")
+    @SequenceGenerator(name = "hibernnateLogMax", sequenceName = "hibernnateLogMax", initialValue = 1, allocationSize = 1)
     @Column(name = "Id")
     private Long id;
 
-    @Column(name = "Date", nullable = false)
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @Column(name = "Date")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date date;
 
     @Column(name = "totalDuration")
