@@ -16,7 +16,8 @@ import java.sql.Date;
 @Table(name = "DurationDays")
 public class LogMax {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="hibernnateLogMax")
+    @SequenceGenerator(name = "hibernnateLogMax", sequenceName = "hibernnateLogMax", initialValue = 1, allocationSize=1)
     @Column(name = "Id")
     private Long id;
 
