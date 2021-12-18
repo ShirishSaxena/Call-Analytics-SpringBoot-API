@@ -16,7 +16,8 @@ import java.sql.Timestamp;
 @Table(name = "callLogger")
 public class CallData {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="hibernnateCallData")
+    @SequenceGenerator(name = "hibernnateCallData", sequenceName = "hibernnateCallData", initialValue = 1, allocationSize=1)
     @Column(name = "Id")
     private Long id;
 
