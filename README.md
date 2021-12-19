@@ -71,7 +71,7 @@
 	localhost:8080/api/getDate/2021-12-13
 	```
 	
-	![Result with over 10k records](https://i.imgur.com/BtBhVtg.png)
+	![Result with over 10k records](https://user-images.githubusercontent.com/6762915/146669530-3f028ce7-bd53-4c9b-a112-54271ac576f6.png)
 	
 * Get List of all logs saved in database
 
