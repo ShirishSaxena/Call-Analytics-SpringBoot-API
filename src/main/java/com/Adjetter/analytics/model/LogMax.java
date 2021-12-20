@@ -22,8 +22,8 @@ public class LogMax {
     private Long id;
 
     @Column(name = "Date")
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date date;
+    //@JsonFormat(pattern = "yyyy-MM-dd")
+    private String date;
 
     @Column(name = "totalDuration")
     private Long totalDuration;
@@ -39,5 +39,7 @@ public class LogMax {
 
     @Column(name = "weekNumber")
     private Integer weekNumber;
+
+    // l.date, l.totalDuration, l.LongestCall, l.dayName, l.year, l.weekNumber
 
 }
