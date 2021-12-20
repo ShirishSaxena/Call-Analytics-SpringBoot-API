@@ -126,3 +126,4 @@
 	Delete LogByNumber
 	Delete LogByNumberAndStartTimeAndEndTime
 	Update LogByNumber/ID
+	Create Java API to get weekNo and DayName from Date
