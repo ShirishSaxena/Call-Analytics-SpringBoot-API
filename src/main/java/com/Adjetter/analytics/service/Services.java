@@ -1,6 +1,7 @@
 package com.Adjetter.analytics.service;
 
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.Adjetter.analytics.model.CallData;
 import com.Adjetter.analytics.model.LogMax;
 import com.Adjetter.analytics.repository.CallDataRepository;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+
 import java.util.*;
+
 
 @Service
 public class Services {
@@ -34,7 +37,7 @@ public class Services {
     }
 
     public LogMax getRecordByDate(Date date) {
-        return logMaxRepository.findByDate(date);
+        return logMaxRepository.findByDate(String.valueOf(date));
     }
 
     // Gets a string containing call Analytics for a given date as well as that date week. (as given in assignment)
@@ -51,14 +54,16 @@ public class Services {
 
         // get day of the week, when calls are highest and volume are longest.
         Integer year = getYearFromDate(date), weekNo = getWeekNoFromDate(date);
-        List<Object> highestCallDay = logMaxRepository.getMaxVolumeFromWeek(year, weekNo);
-        List<Object> LongestCallDay = logMaxRepository.getLongestCallFromWeek(year, weekNo);
 
+        List<LogMax> highestCallDay = logMaxRepository.getMaxVolumeFromWeek(year, weekNo);
+        List<LogMax> LongestCallDay = logMaxRepository.getLongestCallFromWeek(year, weekNo);
+
+        //System.out.println("\n\n" + date + " | " + year + " | " + weekNo + " --> " + highestCallDay.size() + " | " + LongestCallDay.size() + " ");
         //if any of them is null, assume both are null as they are in the same table.
         if (highestCallDay.size() > 0 || LongestCallDay.size() > 0)
             final_result.append(getAnalyticsByWeek(highestCallDay, LongestCallDay));
         else
-            final_result.append("\n\nError(week) : Unable to find volume and longest from week\n");
+            final_result.append("\n\nError(week) : Unable to find volume and longest from week");
 
         return final_result.toString();
     }
@@ -91,24 +96,24 @@ public class Services {
 
         List<CallData> result = repository.saveAll(callsData); // one transaction call which improves performance kinda...?
 
+        int updated = 0, created = 0;
         // get all dates currently on LogMax table
         HashSet<Date> dateHashSet = new HashSet<>();
-        HashSet<Date> canUpdateSet = new HashSet<>();
         for (CallData saveData : result) {
             Date date = getDateFromTimeStamp(saveData.getStartTime());
 
             if (!dateHashSet.contains(date)) {
                 LogMax logMax = getRecordByDate(date);
-                if (logMax == null)
+                if (logMax == null) {
+                    created++;
                     saveLogMax(date);
-                else {
-                    if (!canUpdateSet.contains(date))
-                        updateLogsMax(logMax, date);
-                    else
-                        canUpdateSet.add(date);
                 }
+                else {
+                    updated++;
+                    updateLogsMax(logMax, date);
+                }
+                dateHashSet.add(date);
             }
-            dateHashSet.add(date);
         }
         long end = System.currentTimeMillis();
 
@@ -125,6 +130,9 @@ public class Services {
             map.put("requestPerSecond", reqPerSecond);
             map.put("totalTime", timeTook);
         }
+
+        System.out.println("\nAdded(CallLog) -> " + result.size() + " records | Added(LogMax) -> " + created + " | Updated(LogMax) -> " + updated);
+
         return map;
     }
 
@@ -134,7 +142,7 @@ public class Services {
         logMax.setDayName(logMaxRepository.getDayNameFromDate(date));
         logMax.setLongestCall(getMaxCallByDateBetween(date));
         logMax.setYear(getYearFromDate(date));
-        logMax.setDate(date);
+        logMax.setDate(String.valueOf(date));
         logMax.setTotalDuration(getDurationByDateBetween(date));
         logMax.setWeekNumber(getWeekNoFromDate(date));
         return logMaxRepository.save(logMax);
@@ -183,19 +191,20 @@ public class Services {
     }
 
     // Helper function for getHighestCallVolumeAndLongest(Date date)
-    private String getAnalyticsByWeek(List<Object> highestCallDay, List<Object> LongestCallDay) {
+    private String getAnalyticsByWeek(List<LogMax> highestCallDay, List<LogMax> LongestCallDay) {
         StringBuilder result = new StringBuilder();
         // obj pattern (l.dayName, l.totalDuration, l.date)
-        String highestVolName = ((Object[]) highestCallDay.get(0))[0].toString();
-        Integer highestVolDuration = Integer.parseInt(((Object[]) highestCallDay.get(0))[1].toString());
-        Date highestVolDate = Date.valueOf(((Object[]) highestCallDay.get(0))[2].toString());
 
-        String LongestCallName = ((Object[]) LongestCallDay.get(0))[0].toString();
-        Integer LongestCallDuration = Integer.parseInt(((Object[]) LongestCallDay.get(0))[1].toString());
-        Date LongestCallDate = Date.valueOf(((Object[]) LongestCallDay.get(0))[2].toString());
+        String highestVolName = highestCallDay.get(0).getDayName();
+        Long highestVolDuration = highestCallDay.get(0).getTotalDuration();
+        String highestVolDate = highestCallDay.get(0).getDate();
+
+        String LongestCallName = LongestCallDay.get(0).getDayName();
+        Long LongestCallDuration = LongestCallDay.get(0).getLongestCall();
+        String LongestCallDate = LongestCallDay.get(0).getDate();
 
         result.append("\n\nHighest volume seen on " + highestVolName + "(" + highestVolDate + ") with total " + highestVolDuration + " seconds.\n");
-        result.append("Longest call seen on " + LongestCallName + "(" + LongestCallDate + ") with duration " + LongestCallDuration + " seconds.\n");
+        result.append("Longest call seen on " + LongestCallName + "(" + LongestCallDate + ") with duration " + LongestCallDuration + " seconds.");
 
         return result.toString();
     }
