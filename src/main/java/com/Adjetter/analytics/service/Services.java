@@ -7,12 +7,15 @@ import com.Adjetter.analytics.model.LogMax;
 import com.Adjetter.analytics.repository.CallDataRepository;
 import com.Adjetter.analytics.repository.LogMaxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 
 import java.util.*;
+
 
 
 @Service
@@ -24,6 +27,7 @@ public class Services {
     private LogMaxRepository logMaxRepository;
 
     /******     Get functions       ******/
+
     public List<CallData> getCallLogs() {
         return repository.findAll();
     }
@@ -36,11 +40,13 @@ public class Services {
         return repository.findByNumber(Number);
     }
 
+
     public LogMax getRecordByDate(Date date) {
         return logMaxRepository.findByDate(String.valueOf(date));
     }
 
     // Gets a string containing call Analytics for a given date as well as that date week. (as given in assignment)
+    @Cacheable(value = "getDate")
     public String getHighestCallVolumeAndLongest(Date date) {
         StringBuilder final_result = new StringBuilder();
 
@@ -71,6 +77,7 @@ public class Services {
 
     /***************************************/
     /******     POST functions       ******/
+    @CacheEvict(value = "getDate", allEntries=true)
     public CallData saveCall(CallData callData) {
         if (callData.getDuration() == null)
             callData.setDuration(setDurationFromTimeStamp(callData.getStartTime(), callData.getEndTime()));
@@ -87,6 +94,7 @@ public class Services {
         return saveData;
     }
 
+    @CacheEvict(value = "getDate", allEntries=true)
     public Map<String, ?> saveAllCalls(List<CallData> callsData) {
         long start = System.currentTimeMillis();
         for (CallData callData : callsData) {
