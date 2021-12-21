@@ -127,6 +127,10 @@
 	Update LogByNumber/ID
 	Create Java API to get weekNo and DayName from Date
 ## Updates
+	* 18-Dec-2021
+		Optimized batch add function (Decreased POST request from avg 30 req/second to 400 req/second) ~Mileage may vary (tested with remote sql).
+		Two hibernate sequence for two tables instead of one.
+		Reformatted & cleaned some code.
 
 	* 20-Dec-2021
 		Enabled Caching for getDate.
