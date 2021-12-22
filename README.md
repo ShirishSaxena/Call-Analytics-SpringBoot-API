@@ -61,6 +61,15 @@
 	```
 	It'll generate List of POST req and copy to your clipboard. Finally, paste it on POSTMAN...
 
+## Updates
+	* 20-Dec-2021
+		Enabled Caching for getDate.
+	* 18-Dec-2021
+		Optimized batch add function (Increase in POST request from avg 30 req/second to 400 req/second) ~Mileage may vary (tested with remote sql).
+		Two hibernate sequence for two tables instead of one.
+		Reformatted & cleaned some code.
+
+
 ## API supports GET and POST requests
 ### GET requests
 * Get Analytics
@@ -126,11 +135,5 @@
 	Delete LogByNumberAndStartTimeAndEndTime
 	Update LogByNumber/ID
 	Create Java API to get weekNo and DayName from Date
-## Updates
-	* 18-Dec-2021
-		Optimized batch add function (Increse in POST request from avg 30 req/second to 400 req/second) ~Mileage may vary (tested with remote sql).
-		Two hibernate sequence for two tables instead of one.
-		Reformatted & cleaned some code.
 
-	* 20-Dec-2021
-		Enabled Caching for getDate.
+
